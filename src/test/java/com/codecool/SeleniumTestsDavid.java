@@ -7,9 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class SeleniumTests {
+class SeleniumTestsDavid {
 
     private WebDriver driver;
 
@@ -28,5 +26,17 @@ class SeleniumTests {
             driver.quit();
         }
     }
+
+    //Login - Dávid
+
+    //Logout - Dávid
+
+    //Browse Projects - Gergő
+
+    //Create Issue - TBD
+
+    //Browse Issue - TBD
+
+    //Edit Issue - TBD
 
 }

@@ -33,7 +33,7 @@ class SeleniumTestsGergo {
 
     //Browse Projects - Gergő
 
-    //Create Issue - TBD
+    //Create Issue - Dávid
 
     //Browse Issue - TBD
 

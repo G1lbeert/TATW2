@@ -1,15 +1,15 @@
 package com.codecool;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.apache.commons.logging.Log;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
 
 class SeleniumTestsGergo {
     private WebDriver driver;
@@ -45,23 +45,63 @@ class SeleniumTestsGergo {
         loginButton.click();
     }
 
-    //ujratölti az oldalt így azt meg kelle nézni miért
-    /*@Test
-    public void WrongPassword() throws InterruptedException {
-        var userName = driver.findElement(By.id("login-form-username"));
-        var password = driver.findElement(By.id("login-form-password"));
+    @Test
+    public void noCaptchaAfterThirdTry() throws InterruptedException {
 
-        userName.sendKeys("admin");
-        password.sendKeys("admin.");
-        Thread.sleep(2000);
+        for (int i = 0; i < 3; i++){
+            var userName = driver.findElement(By.id("login-form-username"));
+            var password = driver.findElement(By.id("login-form-password"));
+            userName.sendKeys("asd");
+            password.sendKeys("asd");
 
+            Thread.sleep(5000);
+
+            WebElement loginButton = driver.findElement(By.id("login"));
+            loginButton.click();
+
+            Thread.sleep(5000);
+        }
+    }
+
+    @Test
+    public void cantLoginWithoutCredentials() throws InterruptedException {
         WebElement loginButton = driver.findElement(By.id("login"));
         loginButton.click();
-        Thread.sleep(2000);
 
-        WebElement WarningMessage = driver.findElement(By.className("aui-message aui-message-error"));
-        WarningMessage.isDisplayed();
-    }*/
+        Thread.sleep(5000);
+
+        WebElement errorMessage = driver.findElement(By.id("usernameerror"));
+        var expectedResult = errorMessage.isDisplayed();
+
+        Assertions.assertTrue(expectedResult);
+    }
+
+    @Test
+    public void cantLoginWithoutCorrectCredentials() throws InterruptedException {
+
+        var correctUserName = "automation66";
+        var correctPassword = "CCAutoTest19.";
+        var dummyUserName = "asd";
+        var dummyPassword = "asd";
+        var userNameField = driver.findElement(By.id("login-form-username"));
+        var passwordField = driver.findElement(By.id("login-form-password"));
+        WebElement loginButton = driver.findElement(By.id("login"));
+
+        Thread.sleep(5000);
+
+        userNameField.sendKeys(dummyUserName);
+        passwordField.sendKeys(correctPassword);
+
+        Thread.sleep(5000);
+
+        loginButton.click();
+        Thread.sleep(5000);
+
+        WebElement errorMessage = driver.findElement(By.id("usernameerror"));
+        var expectedResult = errorMessage.isDisplayed();
+
+        Assertions.assertTrue(expectedResult);
+    }
 
     //Logout - Dávid
     @Test
@@ -89,6 +129,22 @@ class SeleniumTestsGergo {
         WebElement openProject = driver.findElement(By.xpath("/html/body/div[1]/header/nav/div/div[1]/ul/li[2]/div/div[2]/ul/li[1]/a"));
         openProject.click();
         Thread.sleep(5000);
+    }
+
+    @Test
+    public void browseOtherProjects() throws InterruptedException {
+        LogIn();
+        Thread.sleep(5000);
+        WebElement projectsNavbar = driver.findElement(By.xpath("/html/body/div[1]/header/nav/div/div[1]/ul/li[2]/a"));
+        projectsNavbar.click();
+
+        Thread.sleep(5000);
+
+        List<WebElement> openProjects = driver.findElements(By.className("aui-icon-container"));
+
+        Thread.sleep(5000);
+
+        //find out a way to open every project
     }
 
     //Create Issue - Dávid
@@ -139,7 +195,42 @@ class SeleniumTestsGergo {
         }
     }
 
-    //Browse Issue - TBD
+    //Browse Issue - Gergő
+
+    @Test
+    public void canBrowseIssue() throws InterruptedException {
+        LogIn();
+        Thread.sleep(5000);
+        WebElement issueNavbar = driver.findElement(By.xpath("/html/body/div[1]/header/nav/div/div[1]/ul/li[3]/a"));
+        issueNavbar.click();
+
+        Thread.sleep(5000);
+
+        WebElement searchForIssuesButton = driver.findElement(By.id("issues_new_search_link"));
+        searchForIssuesButton.click();
+
+        Thread.sleep(5000);
+
+        WebElement selectProject = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/main/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/ul/li[1]/div[1]/div"));
+        selectProject.click();
+
+        Thread.sleep(7000);
+
+        WebElement inputField = driver.findElement(By.id("searcher-pid-input"));
+        inputField.sendKeys("COALA project");
+        Thread.sleep(5000);
+        inputField.sendKeys(Keys.ENTER);
+
+        Thread.sleep(5000);
+
+        inputField.sendKeys("JETI project");
+        Thread.sleep(5000);
+        inputField.sendKeys(Keys.ENTER);
+
+        Thread.sleep(5000);
+
+        //TOUACAN?
+    }
 
     //Edit Issue - TBD
 

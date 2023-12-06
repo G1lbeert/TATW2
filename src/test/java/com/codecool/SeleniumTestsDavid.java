@@ -1,10 +1,7 @@
 package com.codecool;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -45,24 +42,6 @@ class SeleniumTestsDavid {
         loginButton.click();
     }
 
-    //ujratölti az oldalt így azt meg kelle nézni miért
-    /*@Test
-    public void WrongPassword() throws InterruptedException {
-        var userName = driver.findElement(By.id("login-form-username"));
-        var password = driver.findElement(By.id("login-form-password"));
-
-        userName.sendKeys("admin");
-        password.sendKeys("admin.");
-        Thread.sleep(2000);
-
-        WebElement loginButton = driver.findElement(By.id("login"));
-        loginButton.click();
-        Thread.sleep(2000);
-
-        WebElement WarningMessage = driver.findElement(By.className("aui-message aui-message-error"));
-        WarningMessage.isDisplayed();
-    }*/
-
     //Logout - Dávid
     @Test
     public void LogOut() throws InterruptedException {
@@ -83,8 +62,8 @@ class SeleniumTestsDavid {
         LogIn();
         Thread.sleep(3000);
 
-        String[] Projects = {"COALA project (COALA)", "Demo (DEMO)", "JETI project (JETI)"};
-        String[] Issues = {"Bug", "Epic", "Task", "Story"};
+        String[] Projects = {"COALA project (COALA)", "JETI project (JETI)", "TOUCAN project (TOUCAN)"}; // Toucant nem választhatunk
+        String[] Issues = {"Epic", "Bug", "Task", "Story"}; //Bug és Story az összesnél
 
         for (String project : Projects) {
             for (String issue : Issues) {
@@ -99,8 +78,6 @@ class SeleniumTestsDavid {
                     SelectProject.sendKeys(Keys.BACK_SPACE);
                     SelectProject.sendKeys(project);
                     SelectProject.sendKeys(Keys.ENTER);
-                            /*var changeProjectType = SelectProject.findElement(By.xpath("//*[@id=\"coala-project-(coala)-547\"]/a"));
-                            changeProjectType.click();*/
                     Thread.sleep(1000);
 
                     WebElement SelectIssue = driver.findElement(By.xpath("//*[@id=\"issuetype-field\"]"));
@@ -117,16 +94,93 @@ class SeleniumTestsDavid {
 
                     WebElement createButton = driver.findElement(By.xpath("//*[@id=\"create-issue-submit\"]"));
                     createButton.click();
-                } catch (Exception e) { // A click nem fut le ezért hibára fut
-                    WebElement CancelButton = driver.findElement(By.xpath("//*[@id=\"create-issue-dialog\"]/footer/div/div/button"));
-                    CancelButton.click();
+                } catch (Exception e) {// A click nem fut le ezért hibára fut
+                    e.getMessage();
                 }
+                WebElement CancelButton = driver.findElement(By.xpath("//*[@id=\"create-issue-dialog\"]/footer/div/div/button"));
+                CancelButton.click();
             }
         }
     }
 
-    //Browse Issue - TBD
+    @Test
+    public void CreateIssueNegativeCase() throws InterruptedException {
+        LogIn();
+        Thread.sleep(3000);
+        WebElement CreateButton = driver.findElement(By.id("create_link"));
+        CreateButton.click();
+        Thread.sleep(2000);
 
-    //Edit Issue - TBD
+        WebElement SelectProject = driver.findElement(By.xpath("//*[@id=\"project-field\"]"));
+        SelectProject.click();
+        Thread.sleep(1000);
+        SelectProject.sendKeys(Keys.BACK_SPACE);
+        SelectProject.sendKeys("COALA project (COALA)");
+        SelectProject.sendKeys(Keys.ENTER);
+        Thread.sleep(1000);
+
+        WebElement SelectIssue = driver.findElement(By.xpath("//*[@id=\"issuetype-field\"]"));
+        SelectIssue.click();
+        Thread.sleep(1000);
+        SelectIssue.sendKeys(Keys.BACK_SPACE);
+        SelectIssue.sendKeys("Bug");
+        SelectIssue.sendKeys(Keys.ENTER);
+        Thread.sleep(1000);
+
+        WebElement createButton = driver.findElement(By.xpath("//*[@id=\"create-issue-submit\"]"));
+        createButton.click();
+        Thread.sleep(1000);
+
+        WebElement ErrorMessage = driver.findElement(By.xpath("//*[@id=\"dialog-form\"]/div/div[2]/div[1]/div"));
+        var expectedResult = ErrorMessage.isDisplayed();
+
+        Assertions.assertTrue(expectedResult);
+    }
+
+    //Browse Issue - TBD - Gergő
+
+    //Edit Issue - TBD - Dávid
+    @Test
+    public void EditIssue() throws InterruptedException {
+        // Tudom szerkeszteni a Toucan-t és a Jetit
+        LogIn();
+        Thread.sleep(1000);
+
+        WebElement IssueButton = driver.findElement(By.id("find_link"));
+        IssueButton.click();
+        Thread.sleep(1000);
+
+        WebElement SearchIssueButton = driver.findElement(By.id("issues_new_search_link_lnk"));
+        SearchIssueButton.click();
+        Thread.sleep(3000);
+
+        WebElement SearchProjectDropDownMenu = driver.findElement(By.xpath("//*[@id=\"main\"]/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/ul/li[1]/div/div/span"));
+        SearchProjectDropDownMenu.click();
+        Thread.sleep(1000);
+
+        WebElement SearchField = driver.findElement(By.xpath("//*[@id=\"searcher-pid-input\"]"));
+        SearchField.sendKeys("JETI project (JETI)");
+        SearchField.sendKeys(Keys.ENTER);
+        Thread.sleep(3000);
+
+        WebElement OutClick = driver.findElement(By.xpath("//*[@id=\"main\"]/div/div[2]/div/div/div/div/div/div[1]/div[1]/div/div[1]"));
+        OutClick.click();
+        Thread.sleep(3000);
+
+        WebElement ClickProject = driver.findElement(By.xpath("//*[@id=\"main\"]/div/div[2]/div/div/div/div/div/div[1]/div[1]/div/div[1]/div[2]/div/ol/li[1]/a/div/div[2]/span[1]"));
+        ClickProject.click();
+        Thread.sleep(1000);
+
+        WebElement EditButton = driver.findElement(By.xpath("//*[@id=\"edit-issue\"]"));
+        EditButton.click();
+        Thread.sleep(3000);
+
+        WebElement Summary = driver.findElement(By.xpath("//*[@id=\"summary\"]"));
+        Summary.clear();
+        Summary.sendKeys("This test is modified by automated test.");
+
+        WebElement UpdateButton = driver.findElement(By.xpath("//*[@id=\"edit-issue-submit\"]"));
+        UpdateButton.click();
+    }
 
 }

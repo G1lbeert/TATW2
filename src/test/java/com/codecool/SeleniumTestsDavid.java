@@ -20,6 +20,7 @@ class SeleniumTestsDavid {
     public void setUp() {
         driver = new ChromeDriver();
         driver.navigate().to("https://jira-auto.codecool.metastage.net/secure/Dashboard.jspa");
+        driver.manage().window().maximize();
     }
 
     @AfterEach
@@ -96,9 +97,10 @@ class SeleniumTestsDavid {
                     createButton.click();
                 } catch (Exception e) {// A click nem fut le ezért hibára fut
                     e.getMessage();
+                    Thread.sleep(2000);
+                    WebElement CancelButton = driver.findElement(By.xpath("//*[@id=\"create-issue-dialog\"]/footer/div/div/button"));
+                    CancelButton.click();
                 }
-                WebElement CancelButton = driver.findElement(By.xpath("//*[@id=\"create-issue-dialog\"]/footer/div/div/button"));
-                CancelButton.click();
             }
         }
     }
@@ -158,6 +160,7 @@ class SeleniumTestsDavid {
         SearchProjectDropDownMenu.click();
         Thread.sleep(1000);
 
+        //A keresett projekteket kell egy listába tenni
         WebElement SearchField = driver.findElement(By.xpath("//*[@id=\"searcher-pid-input\"]"));
         SearchField.sendKeys("JETI project (JETI)");
         SearchField.sendKeys(Keys.ENTER);
@@ -167,6 +170,7 @@ class SeleniumTestsDavid {
         OutClick.click();
         Thread.sleep(3000);
 
+        //A kiválogatott projektek xPath-át kell betenni egy listába
         WebElement ClickProject = driver.findElement(By.xpath("//*[@id=\"main\"]/div/div[2]/div/div/div/div/div/div[1]/div[1]/div/div[1]/div[2]/div/ol/li[1]/a/div/div[2]/span[1]"));
         ClickProject.click();
         Thread.sleep(1000);
@@ -182,5 +186,4 @@ class SeleniumTestsDavid {
         WebElement UpdateButton = driver.findElement(By.xpath("//*[@id=\"edit-issue-submit\"]"));
         UpdateButton.click();
     }
-
 }
